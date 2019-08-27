@@ -1,0 +1,66 @@
+Docker Courses
+1. Docker Deep Dive   - IN Progress
+2. Docker Certified Associate Prep Course 
+3.Docker Certified Associate
+3.a. DCA practice exam
+4. LXC/LXD Deep dive
+5. RHCE in container application
+6. Deploying Services on a overlay network
+7.Using Docker Bridge network
+8. Using Volumes in docker container
+9. Building a private docker registry
+10. Tagging and Pushing images to the dockerhub
+11. Docker Networking
+12. Docker volumes
+13. Monitoring Containers with Prometheus
+14. Load balancing containers
+15. Container Logging
+16. Dockerizing an app
+17. Deploying docker containers with jenkins pipeline
+18. Using Grafna with Prometheus for alerting and monitoring
+
+Ansible
+Redhat Certified Specialist in Ansible Automation Preparation Course
+Ansible Playbooks Deepdive
+Ansible Setup,Configure and adhoc commands deep-dive
+Advanced Features in asnibleAd-hoc ansible commands
+Ansible Playbooks - Error Handling
+Working with Ansible roles
+Quiz - Ansible roles, Ansible Tower, Ansible Help and Documentation, Managing Parallelism in ansible,
+Ansible galaxy, ansible vault, Configuration management,ansible variables and facts,templates, plays and 
+playbooks, inventory management, add-hoc commands, core components of ansible
+Redhat Certified Specialist in Ansible Exam
+
+AWS With Ansible
+Managing AWS with Ansible
+Deploying Services using Ansible
+Ansible Facts in AWS
+Working with AMI's using ansible
+Deploying AWS with Ansible
+Manipulating Ec2 instances with Ansible
+
+Openshift
+RHCE in openshift administration
+Launch your first openshift operator
+Managing User, Projects and roles
+Managing Persistent Volumes
+
+Jenkins
+Certified Jenkins Engineer
+Security in Jenkins
+Building Jenkins Pipeline
+Implement automated deployment through jenkins pipeline
+Building Docker Images using Jenkins
+Deploying docker containers with Jenkins Pipeline
+Jenkins Engineer
+
+Grafana
+Devops deepdive monitoring
+Using Grafana to Visualize Prometheus Data
+Using Grafana with Prometheus for Alerting and Monitoring
+
+Amazon Web Services
+
+
+https://github.com/linuxacademy   linuxacademy projects
+https://www.youtube.com/user/pavanoltraining/videos devops

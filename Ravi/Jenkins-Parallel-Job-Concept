@@ -1,0 +1,206 @@
+How to run parallel job in jenkins on same machine for example master
+
+https://stackoverflow.com/questions/13366167/jenkins-hudson-how-to-run-multiple-jobs-in-parallel-more-than-1-level-deep
+
+MultiJob Plugin
+
+With The MultiJob Plugin you can split your job into phases which run serially. Within each phase, the jobs run in parallel.
+
+Build Flow Plugin
+
+This plugin is deprecated. Now everyone is using pipeline.
+We have to write script to execute jobs in parallel.
+
+Usecase:
+
+Copy data from one workspace to another workspace in jenkins
+
+src="/var/lib/jenkins/workspace/Multibranch-Pipeline-Demo_master/test.txt"
+dest="/var/lib/jenkins/workspace/Test1"
+
+cp -rf  $src $dest
+
+echo "File succesfully copied"
+
+ls /var/lib/jenkins/workspace/Test1
+
+
+
+Copy with extension
+
+cp **/*.txt /var/lib/jenkins/workspace/copylocation/
+
+cp -n myoldfile.txt mycopiedfile.txt // to overrite files
+//Refer link http://manpages.ubuntu.com/manpages/precise/en/man1/cp.1.html
+
+-i prompt b4 overrite
+-n do not overwrite an existing file
+
+
+find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/copylocation/' ';'   // The '{}' and ";" executes the copy on each file. 
+
+
+find . -name '*.txt'
+
+"${env.WORKSPACE}@tmp"
+
+
+Working code
+
+cd /var/lib/jenkins/workspace/Test2/
+dest="${WORKSPACE}"
+find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test1/' ';'
+
+
+
+IF else
+
+cd /var/lib/jenkins/workspace/Test2/
+
+if [ "$JOB_NAME" = "Test4" ]; then 
+    echo "Copy files into $JOB_NAME"
+    find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test1/' ';'
+else
+    echo "$JOB_NAME is not available"  
+fi;
+ 
+if [ "$JOB_NAME" = "Test3" ]; then 
+    echo "Copy files into $JOB_NAME"
+    find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test3/' ';'
+else
+    echo "$JOB_NAME is not available"  
+fi;
+
+
+ properties([[$class: 'CopyArtifactPermissionProperty', projectNames: 'Other Project Name'], [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false], pipelineTriggers([])]))
+ 
+ 
+ ------
+ Suggested by Sanjay
+ 
+ if value.test4==true
+ cd /var/lib/jenkins/workspace/Test4
+ find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test1/' ';' 
+
+
+####################Working script if else################################## 
+
+if [ "$Test1" = true ]; then 
+    echo "Copy files into $Test1"
+    cd /var/lib/jenkins/workspace/Test2/
+    find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test1/' ';'
+else
+    echo "$Test1 is not available"  
+fi;
+
+if [ "$Test3" = true ]; then 
+    echo "Copy files into $Test3"
+    cd /var/lib/jenkins/workspace/Test2/
+    find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test3/' ';'
+else
+    echo "$Test3 is not available"  
+fi;
+
+###########################working script with else if ########################
+if [ "$Test1" = true ]; then
+	echo "Copy files into $Test1"
+    cd /var/lib/jenkins/workspace/Test2/
+    find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test1/' ';'
+	
+elif [ "$Test3" = true ]; then 
+    echo "Copy files into $Test3"
+    cd /var/lib/jenkins/workspace/Test2/
+    find ./ -name '*.txt' -exec cp -prv '{}' '/var/lib/jenkins/workspace/Test3/' ';'
+else
+	echo "Project is not exist for copy"
+
+fi
+#-exec command - Execute command on each matched file
+#-exec command must be terminated with ; or +. ( (so you usually need to type \; or ';' to avoid interpretion by the shell))
+
+#####################  Archieve patterens #####################
+
+///////////////////////////////////////
+archive 'target*//*.jar' 
+
+//////////////////////////////////////
+
+post {
+        always {
+            echo 'Copying artifacts'
+	    archiveArtifacts 'target/**'
+         }
+	}
+	
+////////////////////////////////
+
+archive '**/target/surefire-reports/TEST-*.xml', allowEmptyResults: true
+
+////////////////////////////////
+
+post {
+        	always {
+            		echo 'Copying artifacts'
+		}
+        	success {
+            		echo 'I succeeeded!'
+        	}
+        	unstable {
+            		echo 'I am unstable :/'
+        	}
+        	failure {
+            		echo 'I failed :('
+        	}
+
+//archiveArtifacts 'target/surefire-reports/*.xml'
+		
+	    	// It takes all files from source like .java,.class,.jar,xml etc
+		// archive '**'  
+		
+		// takes all .xml files
+		// archive '**/*.xml'
+		
+		//archive 'target*//*.jar'
+		// copy only target files
+		
+		//copyArtifacts filter: 'target*//*.jar', fingerprintArtifacts: true, projectName: 'Multibranch-Pipeline/master', target: '/var/lib/jenkins/ravi'
+		//copyArtifacts filter: 'target/surefire-reports/*.xml', fingerprintArtifacts: true, flatten: true, projectName: 'Multibranch-Pipeline/master', target: '/var/lib/jenkins/ravi'	
+		//copyArtifacts filter: '', fingerprintArtifacts: true, flatten: true, projectName: 'Multibranch-Pipeline/master', target: '/var/lib/jenkins/ravi'	
+}	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	Copy data to workspace   Check this plugin for copy.
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Jenkins backup script
+https://gist.github.com/abola/05b0a2ba639a1e9e647d
+
+
+tar -xf jenkins-backup.2019-05-22.tar -C /opt/ravigurav/
+
+#################################################################################################
+
+Jenkins http and https
+
+Links
+https://serverfault.com/questions/278555/how-to-use-jenkins-with-ssl-https
+https://wiki.eclipse.org/Generating_a_Private_Key_and_a_Keystore	// Create key 
+https://jansipke.nl/enable-https-jenkins/
+https://stackoverflow.com/questions/40126736/enable-https-in-jenkins
+https://stackoverflow.com/questions/5313703/how-can-i-set-up-jenkins-ci-to-use-https-on-windows
+
+
+With http
+Check or just see jenkins config file.
+httpPort=8080   // This setting is default. Because Jenkin bydefault runs on http and not on https.
+
+To work with https
+
+edit jenkins config file to
+httpPort = -1
+JENKINS_ARGS="--httpsPort=8080"		// add --httpsPort=8080 in JENKINS_ARGS
+
+
+
+
